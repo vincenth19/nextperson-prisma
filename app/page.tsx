@@ -141,6 +141,7 @@ const HomePage: React.FC = () => {
         <PersonTable people={people} handleOpen={handleOpen} handleDelete={handleDelete} />
         <PersonDialog
           open={open}
+          editMode={editMode}
           handleClose={handleClose}
           currentPerson={currentPerson}
           setCurrentPerson={setCurrentPerson}
