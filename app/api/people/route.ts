@@ -16,18 +16,19 @@ export async function GET(req: NextRequest, res: NextResponse) {
 export async function POST(req: NextRequest, res: NextResponse) {
     try {
         const body = await req.json();
-        const {firstname, lastname, phone} = body;
-        if (!firstname || !lastname || !phone) {
-            return new Response('Missing required fields', {
-                status: 400,
-            })
+        const {firstname, lastname, phone_number, date_of_birth} = body;
+        if (!firstname || !lastname || !phone_number || !date_of_birth) {
+          return new Response("Missing required fields", {
+            status: 400,
+          });
         }
         
         const person = await prisma.person.create({
             data: {
                 firstname,
                 lastname,
-                phone,
+                phone_number,
+                date_of_birth
             }
         })
 
