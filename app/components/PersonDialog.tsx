@@ -1,6 +1,6 @@
-//'use client'
+'use client'
 
-import React, { useEffect, useState } from "react";
+import {Dispatch,SetStateAction} from "react";
 import {
   Dialog,
   DialogActions,
@@ -8,10 +8,12 @@ import {
   DialogTitle,
   TextField,
   Button,
-  Select,
-  MenuItem,
   FormControl,
 } from "@mui/material";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import 'dayjs/locale/en-gb'
 import { Person } from "../lib/person";
 
 interface PersonDialogProps {
@@ -19,140 +21,29 @@ interface PersonDialogProps {
   editMode: boolean;
   handleClose: () => void;
   currentPerson: Person | null;
-  setCurrentPerson: React.Dispatch<React.SetStateAction<Person | null>>;
+  setCurrentPerson: Dispatch<SetStateAction<Person | null>>;
   handleSubmit: () => void;
 }
 
-const month_values = [
-  {
-    label: "January",
-    value: "Jan",
-  },
-  {
-    label: "February",
-    value: "Feb",
-  },
-  {
-    label: "March",
-    value: "Mar",
-  },
-  {
-    label: "April",
-    value: "Apr",
-  },
-  {
-    label: "May",
-    value: "May",
-  },
-  {
-    label: "June",
-    value: "Jun",
-  },
-  {
-    label: "July",
-    value: "Jul",
-  },
-  {
-    label: "August",
-    value: "Aug",
-  },
-  {
-    label: "September",
-    value: "Sep",
-  },
-  {
-    label: "October",
-    value: "Oct",
-  },
-  {
-    label: "November",
-    value: "Nov",
-  },
-  {
-    label: "December",
-    value: "Dec",
-  },
-];
-
-const PersonDialog: React.FC<PersonDialogProps> = ({
+const PersonDialog = ({
   open,
   editMode,
   handleClose,
   currentPerson,
   setCurrentPerson,
   handleSubmit,
-}) => {
-  let personDob = currentPerson?.date_of_birth ? new Date(currentPerson.date_of_birth) : null;
-  const monthIndex = personDob ? personDob.getUTCMonth() : 0;
-  const [dob, setDob] = useState({
-    day: personDob ? personDob.getDate() : 1,
-    month: month_values[monthIndex].value,
-    year: personDob ? personDob.getFullYear() : 2024,
-  });
-  const [dobError, setDobError] = useState({
-    day: {
-      isError: false,
-      helperText: "",
-    },
-    month: {
-      isError: false,
-      helperText: "",
-    },
-    year: {
-      isError: false,
-      helperText: "",
-    },
-  });
-
-  useEffect(() => {
-    personDob = currentPerson?.date_of_birth
-      ? new Date(currentPerson.date_of_birth)
-      : null;
-    const monthIndex = personDob ? personDob.getUTCMonth() : 0;
-    setDob({
-      day: personDob ? personDob.getDate() : 1,
-      month: month_values[monthIndex].value,
-      year: personDob ? personDob.getFullYear() : 2024,
-    });
-  }, [currentPerson]);
-
-  const [formError, setFormError] = useState(false)
-  
-  function handleChangeDate(key: string, value: string | number) {
-    const newDob = { ...dob, [key]: value };
-    setDob(newDob);
-    const newDate = new Date(`${newDob.day} ${newDob.month} ${newDob.year}`);
-    if (isNaN(newDate.getTime())) {
-      setDobError((prev)=>({
-        ...prev,
-        [key]: {
-          isError: true,
-          helperText: 'Invalid '+key
-        }
-      }))
-      setFormError(true)
-    } else {
-      setDobError((prev) => ({
-        ...prev,
-        [key]: {
-          isError: false,
-          helperText: "",
-        },
-      }));
-      setFormError(false)
-      setCurrentPerson((prev) => ({
-        ...prev!,
-        date_of_birth: newDate,
-      }));
-    }
-
-  }
+}: PersonDialogProps) => {
+  const formError =
+    !currentPerson?.firstname ||
+    !currentPerson?.lastname ||
+    !currentPerson?.phone_number ||
+    !currentPerson?.date_of_birth;
 
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>{editMode ? "Edit" : "Add"} Person</DialogTitle>
       <DialogContent>
-        <FormControl sx={{ gap: "10px" }} margin="dense">
+        <FormControl sx={{ gap: "10px" }} margin="dense" fullWidth>
           <TextField
             autoFocus
             required
@@ -190,51 +81,26 @@ const PersonDialog: React.FC<PersonDialogProps> = ({
               }))
             }
           />
-          <div style={{ display: "flex", gap: "10px" }}>
-            <TextField
-              required
-              placeholder="Day"
-              label="Day"
-              type="number"
-              error={dobError.day.isError}
-              value={dob.day}
-              onChange={(e) => {
-                handleChangeDate("day", e.target.value);
-              }}
+          <LocalizationProvider
+            dateAdapter={AdapterDayjs}
+            adapterLocale="en-gb"
+          >
+            <DatePicker
+              value={
+                currentPerson?.date_of_birth
+                  ? dayjs(currentPerson.date_of_birth)
+                  : null
+              }
+              onChange={(value) =>
+                setCurrentPerson((prev) => ({
+                  ...prev!,
+                  date_of_birth: value!.toDate(),
+                }))
+              }
+              views={["day", "month", "year"]}
+              maxDate={dayjs()}
             />
-            <Select
-              required
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={dob.month}
-              label="Age"
-              size="small"
-              error={dobError.month.isError}
-              onChange={(e) => {
-                handleChangeDate("month", e.target.value);
-              }}
-            >
-              {month_values.map((month) => {
-                return (
-                  <MenuItem key={month.value} value={month.value}>
-                    {month.label}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-            <TextField
-              required
-              placeholder="Year"
-              label="Year"
-              type="number"
-              value={dob.year}
-              error={dobError.year.isError}
-              helperText={dobError.year.helperText}
-              onChange={(e) => {
-                handleChangeDate("year", e.target.value);
-              }}
-            />
-          </div>
+          </LocalizationProvider>
         </FormControl>
       </DialogContent>
       <DialogActions>

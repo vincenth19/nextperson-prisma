@@ -6,12 +6,16 @@
 If you have just downloaded this repo, then the first thing you need to do is 
 
 '''bash
+pnpx i
+#or
 npm install 
 '''
 
 First, run the development server:
 
 ```bash
+pnpx dev
+#or
 npm run dev
 ```
 
