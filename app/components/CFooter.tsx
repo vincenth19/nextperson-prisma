@@ -1,7 +1,7 @@
-import React from 'react';
+'use client'
 import { Box, Container, Typography, Link, CssBaseline } from '@mui/material';
 
-const StickyFooter: React.FC = () => {
+const StickyFooter = () => {
   return (
     <>
       <CssBaseline />
@@ -9,7 +9,6 @@ const StickyFooter: React.FC = () => {
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          minHeight: '100vh',
         }}
       >
         {/* Footer */}
@@ -18,9 +17,9 @@ const StickyFooter: React.FC = () => {
           sx={{
             py: 3,
             px: 2,
-            mt: 'auto',
+            mt: '1rem',
             backgroundColor: (theme) =>
-              theme.palette.mode === 'light' ? theme.palette.grey[200] : theme.palette.grey[800],
+              theme.palette.grey[900]
           }}
         >
           <Container maxWidth="lg">
@@ -50,7 +49,7 @@ const StickyFooter: React.FC = () => {
               </Link>
               .
             </Typography>
-            <Typography variant="body2" color="text.secondary" align="center" sx={{ pt: 4 }}>
+            <Typography variant="body2" color="text.secondary" align="center" sx={{ pt: 4, color: '#ffffff' }}>
               &copy; {new Date().getFullYear()}{' '}
               <Link href="https://github.com/gocallum?tab=repositories" target="_blank" rel="noopener noreferrer">
                 Callum Bir
