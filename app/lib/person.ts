@@ -1,7 +1,9 @@
 export interface Person {
-    id: number;
-    firstname: string;
-    lastname: string;
-    phone_number: string;
-    date_of_birth: Date;
+  id: number;
+  createdAt: Date | string;
+  dateOfBirth: Date | string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  updatedAt: Date | string;
 }
