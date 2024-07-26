@@ -23,7 +23,6 @@ const PageHome = () => {
   const fetchPeople = async () => {
     try {
       const data = await getPeople();
-      console.log(data)
       setPeople(data);
     } catch (error) {
       console.error("Error fetching people data:", error);
