@@ -3,6 +3,7 @@ import "./globals.css";
 import StickyFooter from "./components/CFooter";
 import Navbar from "./components/Navbar";
 import { Metadata } from "next";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,9 +21,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Navbar />
-        {children}
-        <StickyFooter />
+        <AppRouterCacheProvider>
+          <Navbar />
+          {children}
+          <StickyFooter />
+        </AppRouterCacheProvider>
       </body>
     </html>
   );
