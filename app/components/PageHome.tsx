@@ -7,6 +7,7 @@ import PersonTable from "./PersonTable";
 import PersonDialog from "./PersonDialog";
 import SnackbarAlert from "./SnackbarAlert";
 import { Person } from "../lib/person";
+import { getPeople, createPerson, updatePerson, deletePerson } from '../actions'
 
 const PageHome = () => {
   const [people, setPeople] = useState<Person[]>([]);
@@ -19,27 +20,17 @@ const PageHome = () => {
     "success"
   );
 
+  const fetchPeople = async () => {
+    try {
+      const data = await getPeople();
+      console.log(data)
+      setPeople(data);
+    } catch (error) {
+      console.error("Error fetching people data:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchPeople = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/people`,
-          {
-            method: "GET",
-          }
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setPeople(data);
-        } else {
-          console.error("Error fetching people data.");
-        }
-      } catch (error) {
-        console.error("Error fetching people data:", error);
-      }
-    };
-
     fetchPeople();
   }, []);
 
@@ -56,23 +47,13 @@ const PageHome = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/people/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await deletePerson(id);
 
-      if (response.ok) {
-        setPeople((prevPeople) =>
-          prevPeople.filter((person) => person.id !== id)
-        );
-        setSnackbarMessage("Record deleted successfully!");
-        setSnackbarSeverity("success");
-      } else {
-        setSnackbarMessage("Error deleting the record.");
-        setSnackbarSeverity("error");
-      }
+      setPeople((prevPeople) =>
+        prevPeople.filter((person) => person.id !== id)
+      );
+      setSnackbarMessage("Record deleted successfully!");
+      setSnackbarSeverity("success");
     } catch (error) {
       console.error("Error deleting the person:", error);
       setSnackbarMessage("Error deleting the record.");
@@ -83,42 +64,24 @@ const PageHome = () => {
 
   const handleSubmit = async () => {
     try {
-      console.log("asdf", currentPerson);
       let response;
       if (editMode && currentPerson) {
-        response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/people/${currentPerson.id}`,
-          {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(currentPerson),
-          }
-        );
+        response = await updatePerson(currentPerson);
       } else {
-        response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/people`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(currentPerson),
-        });
+        response = await createPerson(currentPerson);
       }
 
-      if (response.ok) {
-        const updatedPerson: Person = await response.json();
-        if (editMode) {
-          setPeople((prevPeople) =>
-            prevPeople.map((person) =>
-              person.id === updatedPerson.id ? updatedPerson : person
-            )
-          );
-        } else {
-          setPeople((prevPeople) => [...prevPeople, updatedPerson]);
-        }
-        setSnackbarMessage("Record saved successfully!");
-        setSnackbarSeverity("success");
+      if (editMode) {
+        setPeople((prevPeople) =>
+          prevPeople.map((person) =>
+            person.id === response.id ? response : person
+          )
+        );
       } else {
-        setSnackbarMessage("Error saving the record.");
-        setSnackbarSeverity("error");
+        setPeople((prevPeople) => [...prevPeople, response]);
       }
+      setSnackbarMessage("Record saved successfully!");
+      setSnackbarSeverity("success");
     } catch (error) {
       console.error("Error saving the person:", error);
       setSnackbarMessage("Error saving the record.");
@@ -134,7 +97,10 @@ const PageHome = () => {
 
   return (
     <>
-      <Container component="main" style={{ flex: 1, marginTop: "64px", minHeight: '90dvh' }}>
+      <Container
+        component="main"
+        style={{ flex: 1, marginTop: "64px", minHeight: "90dvh" }}
+      >
         <Button variant="contained" onClick={() => handleOpen(null)}>
           Add New Person
         </Button>
