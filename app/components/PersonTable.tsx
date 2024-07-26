@@ -37,13 +37,13 @@ const PersonTable: React.FC<PersonTableProps> = ({
         </TableHead>
         <TableBody>
           {people.map((person) => {
-            const _date = new Date(person.date_of_birth);
+            const _date = new Date(person.dateOfBirth);
 
             return (
               <TableRow key={person.id}>
-                <TableCell>{person.firstname}</TableCell>
-                <TableCell>{person.lastname}</TableCell>
-                <TableCell>{person.phone_number}</TableCell>
+                <TableCell>{person.firstName}</TableCell>
+                <TableCell>{person.lastName}</TableCell>
+                <TableCell>{person.phoneNumber}</TableCell>
                 <TableCell>{`${_date.getUTCDate()}/${_date.getUTCMonth()+1}/${_date.getUTCFullYear()}`}</TableCell>
                 <TableCell>
                   <Button onClick={() => handleOpen(person)}>Edit</Button>

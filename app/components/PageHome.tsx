@@ -19,10 +19,16 @@ const PageHome = () => {
     "success"
   );
 
+
   useEffect(() => {
     const fetchPeople = async () => {
       try {
-        const response = await fetch("/api/people");
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/people`,
+          {
+            method: "GET",
+          }
+        );
         if (response.ok) {
           const data = await response.json();
           setPeople(data);
@@ -50,9 +56,12 @@ const PageHome = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      const response = await fetch(`/api/people/${id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/people/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (response.ok) {
         setPeople((prevPeople) =>
@@ -74,15 +83,19 @@ const PageHome = () => {
 
   const handleSubmit = async () => {
     try {
+      console.log("asdf", currentPerson);
       let response;
       if (editMode && currentPerson) {
-        response = await fetch(`/api/people/${currentPerson.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(currentPerson),
-        });
+        response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/people/${currentPerson.id}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(currentPerson),
+          }
+        );
       } else {
-        response = await fetch("/api/people", {
+        response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/people`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(currentPerson),

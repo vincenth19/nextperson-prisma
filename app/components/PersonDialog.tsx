@@ -34,10 +34,10 @@ const PersonDialog = ({
   handleSubmit,
 }: PersonDialogProps) => {
   const formError =
-    !currentPerson?.firstname ||
-    !currentPerson?.lastname ||
-    !currentPerson?.phone_number ||
-    !currentPerson?.date_of_birth;
+    !currentPerson?.firstName ||
+    !currentPerson?.lastName ||
+    !currentPerson?.phoneNumber ||
+    !currentPerson?.dateOfBirth;
 
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -49,11 +49,11 @@ const PersonDialog = ({
             required
             label="First Name"
             fullWidth
-            value={currentPerson?.firstname || ""}
+            value={currentPerson?.firstName || ""}
             onChange={(e) =>
               setCurrentPerson((prev) => ({
                 ...prev!,
-                firstname: e.target.value,
+                firstName: e.target.value,
               }))
             }
           />
@@ -61,11 +61,11 @@ const PersonDialog = ({
             required
             label="Last Name"
             fullWidth
-            value={currentPerson?.lastname || ""}
+            value={currentPerson?.lastName || ""}
             onChange={(e) =>
               setCurrentPerson((prev) => ({
                 ...prev!,
-                lastname: e.target.value,
+                lastName: e.target.value,
               }))
             }
           />
@@ -73,11 +73,11 @@ const PersonDialog = ({
             required
             label="Phone"
             fullWidth
-            value={currentPerson?.phone_number || ""}
+            value={currentPerson?.phoneNumber || ""}
             onChange={(e) =>
               setCurrentPerson((prev) => ({
                 ...prev!,
-                phone_number: e.target.value,
+                phoneNumber: e.target.value,
               }))
             }
           />
@@ -87,14 +87,14 @@ const PersonDialog = ({
           >
             <DatePicker
               value={
-                currentPerson?.date_of_birth
-                  ? dayjs(currentPerson.date_of_birth)
+                currentPerson?.dateOfBirth
+                  ? dayjs(currentPerson.dateOfBirth)
                   : null
               }
               onChange={(value) =>
                 setCurrentPerson((prev) => ({
                   ...prev!,
-                  date_of_birth: value!.toDate(),
+                  dateOfBirth: value!.toDate(),
                 }))
               }
               views={["day", "month", "year"]}
